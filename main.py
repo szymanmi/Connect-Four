@@ -23,19 +23,23 @@ class Application(Frame):
 		self.label_fields = Label(self).grid()
 		self.img2 = PhotoImage(file="b.png")
 		self.label_field = []
-		for i in range(42):
-			self.label_field.append(Label(self.label_fields))
-			self.label_field[i].config(image=self.img2)
-			self.label_field[i].grid(row=i % 6 + 2, column=i % 7)
+
+		for i in range(6):
+			tmp = []
+			for j in range(7):
+				tmp.append(Label(self.label_fields))
+				tmp[j].config(image=self.img2)
+				tmp[j].grid(row=i+2, column=j)
+			self.label_field.append(tmp)
 
 		self.red = PhotoImage(file='red.png')
 
 	def new_move(self, n):
-		self.label_field[n % 7].config(image=self.red)
+		self.label_field[5][n].config(image=self.red)
 
 
 root = Tk()
 root.title('projekcik')
-root.geometry('640x480')
+root.geometry('420x490')
 app = Application(root)
 root.mainloop()
