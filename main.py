@@ -1,4 +1,5 @@
 from tkinter import *
+from functools import partial
 
 
 class Application(Frame):
@@ -16,7 +17,7 @@ class Application(Frame):
 		self.bttn = []
 		for i in range(7):
 			self.bttn.append(Button(self.label_buttons))
-			self.bttn[i].config(image=self.img)
+			self.bttn[i].config(image=self.img, command=partial(self.new_move, i))
 			self.bttn[i].grid(row=1, column=i)
 
 		self.label_fields = Label(self).grid()
@@ -26,6 +27,11 @@ class Application(Frame):
 			self.label_field.append(Label(self.label_fields))
 			self.label_field[i].config(image=self.img2)
 			self.label_field[i].grid(row=i % 6 + 2, column=i % 7)
+
+		self.red = PhotoImage(file='red.png')
+
+	def new_move(self, n):
+		self.label_field[n % 7].config(image=self.red)
 
 
 root = Tk()
