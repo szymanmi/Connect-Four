@@ -6,12 +6,14 @@ class Application(Frame):
 	def __init__(self, master):
 		super(Application, self).__init__(master)
 		self.grid()
+
+		self.img = PhotoImage(file="a.png")
 		self.red = PhotoImage(file='red.png')
 		self.yellow = PhotoImage(file='yellow.png')
+
 		self.values = [[0 for i in range(7)] for j in range(6)]
 		self.turn = 1
 
-		print(self.values)
 		self.label_info = Label(self, height=1).grid()
 		self.label_score = Label(self.label_info, text='Wynik 0:0')
 		self.label_score.grid(row=0, column=0, columnspan=2)
@@ -21,7 +23,6 @@ class Application(Frame):
 		self.button_reset.grid(row=0, column=4, columnspan=2)
 
 		self.label_buttons = Label(self).grid()
-		self.img = PhotoImage(file="a.png")
 		self.bttn = []
 		for col in range(7):
 			self.bttn.append(Button(self.label_buttons))
@@ -45,7 +46,10 @@ class Application(Frame):
 			self.update_fields(col, self.calculate_row(col))
 
 	def legal_move(self, col):
-		return True
+		# if field in zero row and clicked column is not used yet then this column is not full -> move is legal
+		if self.values[0][col] is 0:
+			return True
+		return False
 
 	def calculate_row(self, col):
 		for row in range(5, -1, -1):
@@ -65,10 +69,13 @@ class Application(Frame):
 				self.bttn[i].config(image=self.red)
 			self.turn = 1
 
+		self.label_turn.config(text='Tura gracza ' + str(self.turn))
+
 	def reset(self):
 		for i in range(6):
 			for j in range(7):
 				self.values[i][j] = 0
+				self.label_field[i][j].config(image=self.img2)
 
 
 root = Tk()
