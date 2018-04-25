@@ -1,4 +1,4 @@
-class GameRules:
+class ConnectFourRules():
 	def __init__(self):
 		self.flag = 0
 		self.values = [[-1 for i in range(7)] for j in range(6)]
@@ -39,7 +39,7 @@ class GameRules:
 		return self.turn
 
 
-class ConnectFourRules(GameRules):
+
 	def check_end(self):
 		for row in range(6):
 			for first_column in range(4):
@@ -64,5 +64,35 @@ class ConnectFourRules(GameRules):
 			for row in range(3):
 				if self.values[row][col] is self.values[row + 1][col - 1] is self.values[row + 2][col - 2] is \
 						self.values[row + 3][col - 3] and self.values[row][col] is not -1:
+					return True
+		return False
+
+
+class ConnectFiveRules(ConnectFourRules):
+	def check_end(self):
+		for row in range(6):
+			for col in range(3):
+				if self.values[row][col] is self.values[row][col + 1] is self.values[row][col + 2] is self.values[row][
+					col + 3] is self.values[row][col + 4] and self.values[row][col] is not -1:
+					return True
+
+		for col in range(7):
+			for row in range(2):
+				if self.values[row][col] is self.values[row + 1][col] is self.values[row + 2][col] is \
+						self.values[row + 3][col] is self.values[row + 4][col] and self.values[row][col] is not -1:
+					return True
+
+		for col in range(3):
+			for row in range(2):
+				if self.values[row][col] is self.values[row + 1][col + 1] is self.values[row + 2][col + 2] is \
+						self.values[row + 3][col + 3] is self.values[row + 4][col + 4] and self.values[row][
+					col] is not -1:
+					return True
+
+		for col in range(4, 7):
+			for row in range(2):
+				if self.values[row][col] is self.values[row + 1][col - 1] is self.values[row + 2][col - 2] is \
+						self.values[row + 3][col - 3] is self.values[row + 3][col - 3] is self.values[row + 4][
+					col - 4] and self.values[row][col] is not -1:
 					return True
 		return False

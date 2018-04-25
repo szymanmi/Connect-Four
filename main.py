@@ -84,7 +84,13 @@ class Application(Frame):
 				self.label_field[i][j].config(image=self.img)
 
 	def change_mode(self):
-		print('aa')
+		new_mode = str(self.game_mode.get())
+		if new_mode == 'Connect 5':
+			self.game_logic = logic.ConnectFiveRules()
+		if new_mode == 'Connect 4':
+			self.game_logic = logic.ConnectFourRules()
+		self.reset()
+
 
 root = Tk()
 root.title('projekcik')
