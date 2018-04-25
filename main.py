@@ -9,7 +9,7 @@ class Application(Frame):
 		super(Application, self).__init__(master)
 		self.grid()
 
-		self.logic = logic.GameRules()
+		self.logic = logic.ConnectFourRules()
 
 		self.img = PhotoImage(file="b.png")
 		self.red = PhotoImage(file='red.png')
@@ -17,7 +17,6 @@ class Application(Frame):
 
 		modes = ['Connect 3', 'Connect 4', 'Connect 5']
 
-		self.values = [[0 for i in range(7)] for j in range(6)]
 		self.turn = 1
 
 		# first main label contains: current score, turn info, reset button
@@ -57,21 +56,13 @@ class Application(Frame):
 	# this method is called whenever user clicked on any of 7 buttons
 	def new_move(self, col):
 		# if move cannot be performed then do nothing
-		if self.logic.legal_move(self.values, col):
-			self.update_fields(col, self.calculate_row(col))
+		if self.logic.legal_move(col):
+			self.update_fields(col, self.logic.calculate_row(col, self.turn))
 		else:
 			tkinter.messagebox.showinfo(":(", "no tu już się nie zmieści typie")
 
-	# this method is calculating the correct row in which coin should be placed depending on picked column
-	def calculate_row(self, col):
-		for row in range(5, -1, -1):
-			if self.values[row][col] is 0:
-				return row
-
 	# this method is called when user picked correct column to put coin in
 	def update_fields(self, col, row):
-		# updating list
-		self.values[row][col] = self.turn
 		if self.turn == 1:
 			self.label_field[row][col].config(image=self.red)
 			for i in range(7):
@@ -85,17 +76,17 @@ class Application(Frame):
 			self.label_turn.config(text='Tura gracza ' + str(self.turn))
 
 	def reset(self):
+		self.logic.reset()
 		self.turn = 1
 		self.label_turn.config(text='Tura gracza ' + str(self.turn))
 		for i in range(7):
 			self.bttn[i].config(image=self.red)
 		for i in range(6):
 			for j in range(7):
-				self.values[i][j] = 0
 				self.label_field[i][j].config(image=self.img)
 
 	def check_end(self):
-		if logic.ConnectFourRules.check_end(self.values):
+		if self.logic.check_end():
 			tkinter.messagebox.showinfo("koniec", "wygrał gracz " + str(self.turn))
 			self.reset()
 			return True
