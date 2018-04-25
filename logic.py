@@ -1,3 +1,16 @@
+class GameRules:
+	def __init__(self):
+		self.values = None
+		self.flag = 0
+
+	# this method determines whether current move can be executed (column is not full)
+	def legal_move(self, val, col):
+		# if field in zero row and clicked column is not used yet then this column is not full -> move is legal
+		if val[0][col] is 0:
+			return True
+		return False
+
+
 class ConnectFourRules:
 	@staticmethod
 	def check_end(x):
@@ -25,4 +38,3 @@ class ConnectFourRules:
 						x[row + 3][col - 3] and x[row][col] is not 0:
 					return True
 		return False
-

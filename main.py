@@ -9,6 +9,8 @@ class Application(Frame):
 		super(Application, self).__init__(master)
 		self.grid()
 
+		self.logic = logic.GameRules()
+
 		self.img = PhotoImage(file="b.png")
 		self.red = PhotoImage(file='red.png')
 		self.yellow = PhotoImage(file='yellow.png')
@@ -54,17 +56,11 @@ class Application(Frame):
 
 	# this method is called whenever user clicked on any of 7 buttons
 	def new_move(self, col):
-		# if move is not legal then do nothing
-		if self.legal_move(col):
+		# if move cannot be performed then do nothing
+		if self.logic.legal_move(self.values, col):
 			self.update_fields(col, self.calculate_row(col))
-
-	# this method determines whether current move can be executed (column is not full)
-	def legal_move(self, col):
-		# if field in zero row and clicked column is not used yet then this column is not full -> move is legal
-		if self.values[0][col] is 0:
-			return True
-		tkinter.messagebox.showinfo(":(", "no tu już się nie zmieści typie")
-		return False
+		else:
+			tkinter.messagebox.showinfo(":(", "no tu już się nie zmieści typie")
 
 	# this method is calculating the correct row in which coin should be placed depending on picked column
 	def calculate_row(self, col):
@@ -99,7 +95,7 @@ class Application(Frame):
 				self.label_field[i][j].config(image=self.img)
 
 	def check_end(self):
-		if logic.Logic.check_end(self.values):
+		if logic.ConnectFourRules.check_end(self.values):
 			tkinter.messagebox.showinfo("koniec", "wygrał gracz " + str(self.turn))
 			self.reset()
 			return True
