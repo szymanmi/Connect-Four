@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter.messagebox
 from functools import partial
+import logic
 
 
 class Application(Frame):
@@ -12,6 +13,8 @@ class Application(Frame):
 		self.red = PhotoImage(file='red.png')
 		self.yellow = PhotoImage(file='yellow.png')
 
+		modes = ['Connect 3', 'Connect 4', 'Connect 5']
+
 		self.values = [[0 for i in range(7)] for j in range(6)]
 		self.turn = 1
 
@@ -22,8 +25,13 @@ class Application(Frame):
 		self.label_turn = Label(self.label_1, text='Tura gracza 1')
 		self.label_turn.grid(row=0, column=2, columnspan=2)
 		self.button_reset = Button(self.label_1, text='reset', command=self.reset)
-		self.button_reset.grid(row=0, column=4, columnspan=2)
+		self.button_reset.grid(row=0, column=4, columnspan=1)
 
+		self.game_mode = StringVar(self.label_1)
+		self.game_mode.set(modes[1])
+		self.w = OptionMenu(self.label_1, self.game_mode, *modes)
+
+		self.w.grid(row=0, column=5, columnspan=2)
 		# second main label contains 7 clickable buttons
 		self.label_2 = Label(self).grid()
 		self.bttn = []
@@ -55,6 +63,7 @@ class Application(Frame):
 		# if field in zero row and clicked column is not used yet then this column is not full -> move is legal
 		if self.values[0][col] is 0:
 			return True
+		tkinter.messagebox.showinfo(":(", "no tu już się nie zmieści typie")
 		return False
 
 	# this method is calculating the correct row in which coin should be placed depending on picked column
@@ -90,36 +99,10 @@ class Application(Frame):
 				self.label_field[i][j].config(image=self.img)
 
 	def check_end(self):
-		for row in range(6):
-			for first_column in range(4):
-				if self.values[row][first_column] is self.values[row][first_column + 1] is self.values[row][
-					first_column + 2] is self.values[row][first_column + 3] and self.values[row][first_column] is not 0:
-					tkinter.messagebox.showinfo("Koniec", "Wygrał gracz " + str(self.turn))
-					self.reset()
-					return True
-
-		for col in range(7):
-			for row in range(3):
-				if self.values[row][col] is self.values[row + 1][col] is self.values[row + 2][col] is \
-						self.values[row + 3][col] and self.values[row][col] is not 0:
-					tkinter.messagebox.showinfo("Koniec", "Wygrał gracz " + str(self.turn))
-					self.reset()
-					return True
-
-		for row in range(3):
-			for col in range(4):
-				if self.values[row][col] is self.values[row + 1][col + 1] is self.values[row + 2][col + 2] is \
-						self.values[row + 3][col + 3] and self.values[row][col] is not 0:
-					tkinter.messagebox.showinfo("Koniec", "Wygrał gracz " + str(self.turn))
-					self.reset()
-					return True
-		for col in range(3, 7):
-			for row in range(3):
-				if self.values[row][col] is self.values[row + 1][col - 1] is self.values[row + 2][col - 2] is \
-						self.values[row + 3][col - 3] and self.values[row][col] is not 0:
-					tkinter.messagebox.showinfo("Koniec", "Wygrał gracz " + str(self.turn))
-					self.reset()
-					return True
+		if logic.Logic.check_end(self.values):
+			tkinter.messagebox.showinfo("koniec", "wygrał gracz " + str(self.turn))
+			self.reset()
+			return True
 		return False
 
 	def change_turn(self):
