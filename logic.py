@@ -1,8 +1,8 @@
-class ConnectFourRules():
+class ConnectFourRules:
 	def __init__(self):
-		self.flag = 0
 		self.values = [[-1 for i in range(7)] for j in range(6)]
 		self.turn = 0
+		self.score = [0, 0]
 
 	# this method determines whether current move can be executed (column is not full)
 	def column_not_full(self, clicked_col):
@@ -16,6 +16,13 @@ class ConnectFourRules():
 		for row in range(5, -1, -1):
 			if self.values[row][col] is -1:
 				return row
+
+	def draw(self):
+		for i in range(6):
+			for j in range(7):
+				if self.values[i][j] == -1:
+					return False
+		return True
 
 	def update_fields(self, row, col):
 		self.values[row][col] = self.turn
@@ -38,7 +45,11 @@ class ConnectFourRules():
 	def get_turn(self):
 		return self.turn
 
+	def get_score(self):
+		return self.score
 
+	def add_point(self):
+		self.score[self.turn] += 1
 
 	def check_end(self):
 		for row in range(6):
@@ -95,4 +106,33 @@ class ConnectFiveRules(ConnectFourRules):
 						self.values[row + 3][col - 3] is self.values[row + 3][col - 3] is self.values[row + 4][
 					col - 4] and self.values[row][col] is not -1:
 					return True
+		return False
+
+
+class ConnectThreeRules(ConnectFourRules):
+	def check_end(self):
+		for row in range(6):
+			for col in range(5):
+				if self.values[row][col] is self.values[row][col + 1] is self.values[row][col + 2] and self.values[row][
+					col] is not -1:
+					return True
+
+		for row in range(4):
+			for col in range(7):
+				if self.values[row][col] is self.values[row + 1][col] is self.values[row + 2][col] and self.values[row][
+					col] is not -1:
+					return True
+
+		for row in range(4):
+			for col in range(5):
+				if self.values[row][col] is self.values[row + 1][col + 1] is self.values[row + 2][col + 2] and \
+						self.values[row][col] is not -1:
+					return True
+
+		for col in range(2, 7):
+			for row in range(4):
+				if self.values[row][col] is self.values[row + 1][col - 1] is self.values[row + 2][col - 2] and \
+						self.values[row][col] is not -1:
+					return True
+
 		return False

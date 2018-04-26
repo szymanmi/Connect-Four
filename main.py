@@ -22,13 +22,13 @@ class Application(Frame):
 		self.label_score.grid(row=0, column=0, columnspan=1)
 		self.label_turn = Label(self.label_1, text='Tura\ngracza\n 0')
 		self.label_turn.grid(row=0, column=1, columnspan=1)
-		self.button_reset = Button(self.label_1, text='reset', command=self.reset)
+		self.button_reset = Button(self.label_1, text='reset', command=lambda: self.reset())
 		self.button_reset.grid(row=0, column=2, columnspan=1)
 		self.game_mode = StringVar(self.label_1)
 		self.game_mode.set(modes[1])
 		self.w = OptionMenu(self.label_1, self.game_mode, *modes)
 		self.w.grid(row=0, column=3, columnspan=2)
-		self.button_apply = Button(self.label_1, text='zmień tryb', command=self.change_mode)
+		self.button_apply = Button(self.label_1, text='zmień tryb', command=lambda: self.change_mode())
 		self.button_apply.grid(row=0, column=5, columnspan=2)
 
 		# second main label contains 7 clickable buttons
@@ -64,7 +64,11 @@ class Application(Frame):
 		self.game_logic.update_fields(row, col)
 		self.label_field[row][col].config(image=self.img_player[self.game_logic.get_turn()])
 
-		if not self.game_logic.check_end():
+		if self.game_logic.draw():
+			tkinter.messagebox.showinfo("koniec", "remis")
+			self.reset()
+
+		elif not self.game_logic.check_end():
 			self.game_logic.change_turn()
 			for i in range(7):
 				self.bttn[i].config(image=self.img_player[self.game_logic.get_turn()])
@@ -72,11 +76,16 @@ class Application(Frame):
 
 		else:
 			tkinter.messagebox.showinfo("koniec", "wygrał gracz " + str(self.game_logic.get_turn()))
+			self.game_logic.add_point()
+			temp = self.game_logic.get_score()
+			self.label_score.config(text='Wynik\n' + str(temp[0]) + ':' + str(temp[1]))
+
 			self.reset()
 
 	def reset(self):
 		self.game_logic.reset()
 		self.label_turn.config(text='Tura\ngracza\n' + str(self.game_logic.get_turn()))
+
 		for i in range(7):
 			self.bttn[i].config(image=self.img_player[0])
 		for i in range(6):
@@ -84,11 +93,14 @@ class Application(Frame):
 				self.label_field[i][j].config(image=self.img)
 
 	def change_mode(self):
+		self.label_score.config(text='Wynik\n0:0')
 		new_mode = str(self.game_mode.get())
 		if new_mode == 'Connect 5':
 			self.game_logic = logic.ConnectFiveRules()
-		if new_mode == 'Connect 4':
+		elif new_mode == 'Connect 4':
 			self.game_logic = logic.ConnectFourRules()
+		elif new_mode == 'Connect 3':
+			self.game_logic = logic.ConnectThreeRules()
 		self.reset()
 
 
