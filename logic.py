@@ -1,6 +1,6 @@
 class ConnectFourRules:
 	def __init__(self):
-		self.values = [[-1 for i in range(7)] for j in range(6)]
+		self.values = [[-1 for i in range(7)] for j in range(6)]		### LC
 		self.turn = 0
 		self.score = [0, 0]
 
